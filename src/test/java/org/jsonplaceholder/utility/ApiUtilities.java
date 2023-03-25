@@ -9,16 +9,11 @@ import java.io.InputStream;
 import static io.restassured.RestAssured.given;
 
 public class ApiUtilities {
-    private final PropertiesRead propertiesRead;
     public ApiUtilities(PropertiesRead propertiesRead){
-        this.propertiesRead = propertiesRead;
     }
 
     /**
      *
-     * @param bodyRequest
-     * @param URL
-     * @return
      */
     public Response sendPostRequest(String bodyRequest, String URL){
         return  given()
@@ -33,8 +28,6 @@ public class ApiUtilities {
 
     /**
      *
-     * @param URL
-     * @return
      */
     public Response sendGetRequest(String URL){
         return given().
@@ -48,15 +41,11 @@ public class ApiUtilities {
 
     /**
      *
-     * @param URL
-     * @param key
-     * @param value
-     * @param schemaFile
-     * @return
      */
     public Response sendGetRequestQuery(String URL, String key, String value, String schemaFile){
         InputStream schema = getClass().getClassLoader().getResourceAsStream(schemaFile);
 
+        assert schema != null;
         return given().
                 contentType(ContentType.JSON).
                 param(key, value).
@@ -66,16 +55,6 @@ public class ApiUtilities {
                 and().assertThat().body(JsonSchemaValidator.matchesJsonSchema(schema)).
                 extract().
                 response();
-    }
-
-    /**
-     *
-     * @param response
-     * @param fieldName
-     * @return
-     */
-    public String extractValueBody(Response response, String fieldName) {
-        return response.body().jsonPath().get(fieldName).toString();
     }
 }
 

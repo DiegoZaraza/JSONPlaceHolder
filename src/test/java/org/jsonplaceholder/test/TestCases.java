@@ -12,23 +12,22 @@ import java.util.Random;
 
 public class TestCases extends BaseClass {
     private Response response;
-    private String email;
 
     /**
-     *
+     * Testcase01 - Performs the call to obtain the email of a randomly selected user.
      */
-    @Test(priority = 0)
+    @Test()
     public void getEmail(){
         Reporter.log("Test Cases - Get Email", true);
-        Random random = new Random();;
+        Random random = new Random();
         getPosts().setUserId(random.nextInt(10 - 1 + 1) + 1);
         setResponse(apiUtilities.sendGetRequest("users/" + getPosts().getUserId()));
-        email = getResponse().jsonPath().getString("email");
+        String email = getResponse().jsonPath().getString("email");
         Reporter.log("Email - " + email, true);
     }
 
     /**
-     *
+     * Testcase02 - Validates through the response schema if the id field is a numeric field
      */
     @Test(priority = 1)
     public void getPostUser(){
@@ -38,7 +37,8 @@ public class TestCases extends BaseClass {
     }
 
     /**
-     *
+     * Testcase03 - Performs the sending of a post request to register a new publication.
+     * In this case, the faker library is used to generate random data to send the information.
      */
     @Test(priority = 1)
     public void postNewPost(){
@@ -48,25 +48,17 @@ public class TestCases extends BaseClass {
         getPosts().setTitle(faker.book().title());
         getPosts().setBody(faker.book().author());
 
-        setResponse(apiUtilities.sendPostRequest(new Gson().toJson(getPosts()).toString(), "posts"));
+        setResponse(apiUtilities.sendPostRequest(new Gson().toJson(getPosts()), "posts"));
         Assert.assertEquals(getResponse().statusCode(),201 );
 
         Assert.assertEquals(getResponse().jsonPath().getString("userId"), String.valueOf(getPosts().getUserId()));
     }
 
-    /**
-     *
-     * @return
-     */
-    public Response getResponse() {
+   public Response getResponse() {
         return response;
     }
 
-    /**
-     *
-     * @param response
-     */
-    public void setResponse(Response response) {
+   public void setResponse(Response response) {
         this.response = response;
     }
 }
